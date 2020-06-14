@@ -20,7 +20,7 @@ EMOTIONS = ["angry","disgust","scared", "happy", "sad", "surprised","neutral"]
 orig_frame = cv2.imread(img_path)
 frame = cv2.imread(img_path,0)
 faces = face_detection.detectMultiScale(frame,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)
- 
+
 
 if len(faces) > 0:
     faces = sorted(faces, reverse=True,key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]

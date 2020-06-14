@@ -14,34 +14,31 @@ import sys
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
 
-def load_model():
+def get_model():
     global emotion_model_path
+    global emotion_classifier
     # parameters for loading data and images
     emotion_model_path = 'EVA model/fer2013_mini_XCEPTION.119-0.65.hdf5'
     #img_path = 'img/2020-06-1413:57:52.jpg'
     emotion_classifier = load_model(emotion_model_path, compile=False)
-    
-
-def prepare_image(img_path):
-
     global detection_model_path
     detection_model_path = 'detection_models/haarcascade_frontalface_default.xml'
     face_detection = cv2.CascadeClassifier(detection_model_path)
-    EMOTIONS = ["angry","disgust","scared", "happy", "sad", "surprised","neutral"]
+    print("model loaded")
+    
+
+def prepare_image(img_path):
     #reading the frame
-    orig_frame = cv2.imread(img_path)
     frame = cv2.imread(img_path,0)
-    faces = face_detection.detectMultiScale(frame,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)
-    
+    faces = face_detection.detectMultiScale(frame,scaleFactor=1.1,minNeighbors=5,minSize=(30,30),flags=cv2.CASCADE_SCALE_IMAGE)  
     if len(faces) > 0:
-    faces = sorted(faces, reverse=True,key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]
-    (fX, fY, fW, fH) = faces
-    roi = frame[fY:fY + fH, fX:fX + fW]
-    roi = cv2.resize(roi, (48, 48))
-    roi = roi.astype("float") / 255.0
-    roi = img_to_array(roi)
-    roi = np.expand_dims(roi, axis=0)
-    
+        faces = sorted(faces, reverse=True,key=lambda x: (x[2] - x[0]) * (x[3] - x[1]))[0]
+        (fX, fY, fW, fH) = faces
+        roi = frame[fY:fY + fH, fX:fX + fW]
+        roi = cv2.resize(roi, (48, 48))
+        roi = roi.astype("float") / 255.0
+        roi = img_to_array(roi)
+        roi = np.expand_dims(roi, axis=0)         
     return roi
 
 
@@ -60,7 +57,7 @@ def predict():
 
             # preprocess the image and prepare it for classification
             image = prepare_image(image)
-
+            EMOTIONS = ["angry","disgust","scared", "happy", "sad", "surprised","neutral"]
             # classify the input image and then initialize the list
             # of predictions to return to the client
             preds = emotion_classifier.predict(image)
@@ -69,7 +66,7 @@ def predict():
 
             response = {
                 'prediction':{
-                    label : emotion_probability
+                    'label' : emotion_probability
                 }
             }
 
@@ -82,7 +79,7 @@ def predict():
 if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
         "please wait until server has fully started"))
-    load_model()
-    app.run()
+    get_model()
+    app.run(host='0.0.0.0',debug=True)
 
 
