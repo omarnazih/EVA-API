@@ -1,5 +1,0 @@
-kears
-numpy
-imutils
-opencv
-tensorflow

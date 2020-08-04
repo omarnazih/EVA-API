@@ -6,7 +6,7 @@ import numpy as np
 
 # parameters for loading data and images
 detection_model_path = 'detection_models/haarcascade_frontalface_default.xml'
-emotion_model_path = 'EVA model/fer2013_mini_XCEPTION.119-0.65.hdf5'
+emotion_model_path = 'EVA model/_mini_XCEPTION.102-0.66.hdf5'
 
 # hyper-parameters for bounding boxes shape
 # loading models
@@ -38,9 +38,7 @@ while True:
         roi = cv2.resize(roi, (48, 48))
         roi = roi.astype("float") / 255.0
         roi = img_to_array(roi)
-        roi = np.expand_dims(roi, axis=0)
-        
-        
+        roi = np.expand_dims(roi, axis=0) 
         preds = emotion_classifier.predict(roi)[0]
         emotion_probability = np.max(preds)
         label = EMOTIONS[preds.argmax()]
@@ -57,8 +55,7 @@ while True:
                 (255, 255, 255), 2)
                 cv2.putText(frameClone, label, (fX, fY - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-                cv2.rectangle(frameClone, (fX, fY), (fX + fW, fY + fH),
-                              (0, 0, 255), 2)
+                cv2.rectangle(frameClone, (fX, fY), (fX + fW, fY + fH),(0, 0, 255), 2)
 
     cv2.imshow('your_face', frameClone)
     cv2.imshow("Probabilities", canvas)

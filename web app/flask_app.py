@@ -7,7 +7,7 @@ import imutils
 import cv2
 import flask
 from flask import jsonify
-from flask import request
+from flask import requests
 import io
 import sys
  
