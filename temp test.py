@@ -12,7 +12,7 @@ EMOTIONS = ["angry","disgust","scared", "happy", "sad", "surprised","neutral"]
 # Load the cascade
 face_cascade = cv2.CascadeClassifier('detection_models/haarcascade_frontalface_default.xml')
 # Read the input image
-img = cv2.imread('img/Screenshot from 2020-07-25 15.14.29.jpeg')
+img = cv2.imread('img/12.jpeg')
 # Convert into grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # Detect faces
@@ -34,5 +34,9 @@ preds = emotion_classifier.predict(roi)[0]
 emotion_probability = np.max(preds)
 label = EMOTIONS[preds.argmax()]
 
+open("file.txt", 'w').close()
+File_object = open(r"file.txt","a")
+File_object.write(label)
+File_object.close()
 
-print(label)  
+#print(label)  
